@@ -31,6 +31,12 @@ public class GameUI extends JFrame {
 				
 			}
 			flag = true;
+			for(int i=0; i<objTable.getRow(); i++){
+				for(int j=0; j<objTable.getColumn(); j++){
+					objTable.getTable()[i][j].setBackground(new Color(238, 238, 238));
+					objTable.getTable()[i][j].setColorToIsAlive();
+				}
+			}
 		}
 	};
 	
@@ -67,8 +73,8 @@ public class GameUI extends JFrame {
 	public GameUI(){
 		objTable = new GameOfLife(50, 50);
 		btnStart = new JButton("Start");
-		btnStop = new JButton("Stop");
-		btnStep = new JButton("Step by Step");
+		btnStop = new JButton("Stop/Clear");
+		btnStep = new JButton("Pause/Step by Step");
 		flag = true;
 		JPanel panel = new JPanel();
 		JPanel panelButtons = new JPanel();

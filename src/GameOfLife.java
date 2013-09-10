@@ -21,6 +21,14 @@ public class GameOfLife {
 		return table;
 	}
 	
+	public int getRow(){
+		return row;
+	}
+	
+	public int getColumn(){
+		return column;
+	}
+	
 	public void population(){ //Defines how many alive neighbours each cell have
 		int r, c;
 		int countNeighbours;

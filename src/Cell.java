@@ -2,13 +2,16 @@ import java.awt.Color;
 import javax.swing.JButton;
 
 public class Cell extends JButton{
-	public boolean isAlive, nextGenIsAlive;
+	private boolean isAlive;
+	private boolean nextGenIsAlive;
+	private final Color alive = new Color(0, 0, 0);
+	private final Color dead = new Color(238, 238, 238);
 	
 	Cell(){
 		super();
 		isAlive = false;
 		nextGenIsAlive = false;
-		setBackground(new Color(238, 238, 238));
+		setBackground(dead);
 	}
 	
 	public boolean getIsAlive(){
@@ -24,15 +27,13 @@ public class Cell extends JButton{
 	}
 	
 	public void setNextGenToCurrentGen(){
+		isAlive = nextGenIsAlive;
 		if(nextGenIsAlive){
-			isAlive = true;
-			setBackground(Color.black);
+			setBackground(alive);
 		}
 		else{
-			isAlive = false;
-			setBackground(new Color(238, 238, 238));
+			setBackground(dead);
 		}
-		
 	}
 	
 	public void setColorToIsAlive(){

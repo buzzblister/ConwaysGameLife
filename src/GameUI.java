@@ -1,25 +1,33 @@
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.TimerTask;
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 public class GameUI extends JFrame {
 	private GameOfLife objTable;
-	private Color c = new Color(238, 238, 238);
+	private Color dead = new Color(238, 238, 238);
+	private Color alive = new Color(0,0,0);
 	private JButton btnStart;
 	private	JButton btnStop;
 	private JButton btnStep;
-	private boolean flag;
+	private boolean startClicked;
 	java.util.Timer timer;
 	TimerTask timerTask;
 	
 	private ActionListener bl = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			if(((Cell)e.getSource()).getBackground() == Color.black)
-				((Cell)e.getSource()).setBackground(c);
+			Cell cell = ((Cell)e.getSource());
+			if(cell.getBackground() == Color.black)
+				cell.setBackground(dead);
 			else
-				((Cell)e.getSource()).setBackground( Color.black );
-			((Cell)e.getSource()).setColorToIsAlive();
+				cell.setBackground( Color.black );
+			cell.setColorToIsAlive();
 		}
 	};
 	
@@ -27,14 +35,14 @@ public class GameUI extends JFrame {
 		public void actionPerformed(ActionEvent event) {
 			try{
 				timer.cancel();
-			}catch(Exception e){
-				
+			}catch(IllegalStateException e){
+				e.printStackTrace();
 			}
-			flag = true;
+			startClicked = true;
+			
 			for(int i=0; i<objTable.getRow(); i++){
 				for(int j=0; j<objTable.getColumn(); j++){
-					objTable.getTable()[i][j].setBackground(new Color(238, 238, 238));
-					objTable.getTable()[i][j].setColorToIsAlive();
+					objTable.setLifeByColor(i, j, dead);
 				}
 			}
 		}
@@ -44,28 +52,26 @@ public class GameUI extends JFrame {
 		public void actionPerformed(ActionEvent event) {
 			try{
 				timer.cancel();
-			}catch(Exception e){
-				
+			}catch(IllegalStateException e){
+				e.printStackTrace();
 			}
-			flag = true;
-			objTable.population();
-			objTable.enterNextGeneration();
+			startClicked = true;
+			objTable.evolve();
 		}
 	};
 	
 	private ActionListener startClick = new ActionListener() {
 		public void actionPerformed(ActionEvent event) {
-			if(flag){
+			if(startClicked){
 				timer = new java.util.Timer();
 				timerTask = new TimerTask() {
 					@Override
 					public void run() {
-						objTable.population();
-						objTable.enterNextGeneration();
+						objTable.evolve();
 					}
 				};
 				timer.schedule(timerTask, 500, 500);
-				flag = false;
+				startClicked = false;
 			}
 		}
 	};
@@ -73,18 +79,19 @@ public class GameUI extends JFrame {
 	public GameUI(){
 		objTable = new GameOfLife(50, 50);
 		btnStart = new JButton("Start");
-		btnStop = new JButton("Stop/Clear");
-		btnStep = new JButton("Pause/Step by Step");
-		flag = true;
-		JPanel panel = new JPanel();
+		btnStop = new JButton("Stop");
+		btnStep = new JButton("Step by Step");
+		startClicked = true;
+		JPanel gridPanel = new JPanel();
 		JPanel panelButtons = new JPanel();
+		JFrame gameFrame = new JFrame("Game of life");
 		
-		panel.setSize(600,600);
-		panel.setLayout(new GridLayout(50,50));
+		gridPanel.setSize(600,600);
+		gridPanel.setLayout(new GridLayout(50,50));
 		for(int i = 0; i < 50; i++)
 			for(int j=0; j < 50; j++){
 				objTable.getTable()[i][j].addActionListener(bl);
-				panel.add(objTable.getTable()[i][j]);
+				gridPanel.add(objTable.getTable()[i][j]);
 			}
 		btnStart.addActionListener(startClick);
 		btnStop.addActionListener(stopClick);
@@ -94,15 +101,14 @@ public class GameUI extends JFrame {
 		panelButtons.add(btnStep);
 		panelButtons.add(btnStop);
 		
-		setTitle("Game Of life");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setResizable(false);
-		setSize(600,620);
+		gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gameFrame.setResizable(false);
+		gameFrame.setSize(600,620);
 		
-		add(panel);
-		add(BorderLayout.SOUTH, panelButtons);
+		gameFrame.add(gridPanel);
+		gameFrame.add(BorderLayout.SOUTH, panelButtons);
 		
-		setVisible(true);
+		gameFrame.setVisible(true);
 	}
 	
 	static GameUI objGame;

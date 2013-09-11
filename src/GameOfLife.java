@@ -1,82 +1,79 @@
-import java.awt.Color;
-
 public class GameOfLife {
-	private Cell[][] table;	//Table that contains all cells
+	private boolean states[][];
 
-	GameOfLife(int r, int col){
-		table = new Cell [r][col];
-		for(int i=0; i<r; i++){ //Initialize
+	GameOfLife(int row, int col){
+		states = new boolean[row][col];
+		for(int i=0; i<row; i++){
 			for(int j=0; j<col; j++){
-				table[i][j] = new Cell();
+				states[i][j] = false;
 			}
 		}
-	}
-	
-	public Cell[][] getTable(){
-		return table;
 	}
 	
 	public int getRow(){
-		return table.length;
+		return states.length;
 	}
 	
 	public int getColumn(){
-		return table[0].length;
+		return states[0].length;
 	}
 	
-	public void setLifeByColor(int row, int col, Color life){
-		table[row][col].setBackground(life);
-		table[row][col].setColorToIsAlive();
+	public boolean getLife(int row, int col){
+		return states[row][col];
 	}
 	
-	public void evolve(){ //Evolve to next generation
-		for(int i=0; i<getRow(); i++){ //For each row
-			for(int j=0; j<getColumn(); j++){ //For each column
-				newGeneration(calculations(i,j), i, j); //Decides if cell will live in next generation
+	public void setLife(int row, int col, boolean life){
+		states[row][col] = life;
+	}
+	
+	public void evolve(){ 
+		boolean temp[][] = new boolean [getRow()][getColumn()];
+		for(int row=0; row<getRow(); row++){
+			for(int col=0; col<getColumn(); col++){
+				temp[row][col] = newGeneration( calculations(row, col), row, col );
 			}
 		}
-		
-		for(int i=0; i<getRow(); i++){			//For each
-			for(int j=0; j<getColumn(); j++){	//cell in table
-				table[i][j].setNextGenToCurrentGen();
+		setNewGeneration(temp);
+	}
+	
+	private void setNewGeneration(boolean[][] temp) {
+		for(int row=0; row<getRow(); row++){
+			for(int col=0; col<getColumn(); col++){
+				states[row][col] = temp[row][col];
 			}
 		}
 	}
+
+	private boolean isInBorder(int row, int col){
+		return row >= 0 && col >= 0 && row < getRow() && col < getColumn();
+	}
 	
-	public int calculations(int i, int j){ //Calculates neighbours
+	private int calculations(int row, int col){ //Calculates neighbours
 		int r = 0;
 		int c = 0;
 		int countNeighbours = 0;
-		for(int rowMod = -1; rowMod <= 1; rowMod++){ 		//Neighbours of cell [i  j]
-			for(int colMod = -1; colMod <= 1; colMod++){	//Neighbours of cell [i  j]
-				r=i+rowMod;
-				c=j+colMod;
+		countNeighbours = states[row][col] ? -1 : 0;		//Cuz it will calculate himself too if it's alive
+		for(int rowMod = -1; rowMod <=1; rowMod++){
+			for(int colMod = -1; colMod <=1; colMod++){
+				r = row + rowMod;
+				c = col + colMod;
 				//If cell exists and it is alive..
-				if (r >= 0 && c >= 0 && r < getRow() && c < getColumn() && true == this.table[r][c].getIsAlive()){
-					if(i != r || j != c) //..and it's not the cell itself (i, j)
-						countNeighbours += 1; //count this neighbour
+				if ( isInBorder(r,c) && states[r][c]){
+					countNeighbours += 1; //count this neighbour
 				}
-		    }
+			}
 		}
 		return countNeighbours;
 	}
 	
-	public void newGeneration(int countNeighbours, int r, int c){ //Decides if cell will live in next generation
-		switch(countNeighbours){ //Switch alive neighbours of cel [r c]
-			case 2: //Alive cell live, dead cell - dead in next generation
-				if(table[r][c].getIsAlive())
-					table[r][c].setNextGenLife(true);
-				else
-					table[r][c].setNextGenLife(false);
-				break;
-						
-			case 3: //Cell lives in next generation
-				table[r][c].setNextGenLife(true);
-			break;
-						
-			default: //Cell dies in next generation
-				table[r][c].setNextGenLife(false); 
-			break;
-		}
+	public void setLifeByString(String rowCol, boolean life){
+		String tmp[] = rowCol.split(",");
+		int row = Integer.parseInt(tmp[0]);
+		int col = Integer.parseInt(tmp[1]);
+		states[row][col] = life;
+	}
+	
+	private boolean newGeneration(int count, int row, int col){
+		return (3 == count || 2 == count && states[row][col]);
 	}
 }

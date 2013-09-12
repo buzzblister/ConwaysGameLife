@@ -19,13 +19,10 @@ public class GameController {
 		isRunning = false;
 		timer = new Timer();
 		
-		userInterface.addBtnStartActionListener(startClicked);
-		userInterface.addBtnStepActionListener(stepClicked);
-		userInterface.addBtnClearActionListener(clearClicked);
-		userInterface.addGridButtonListener(panelButtonClicked);
+		setListeners();
 	}
 	
-	private ActionListener panelButtonClicked = new ActionListener() {
+	private ActionListener gridButtonClicked = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			JButton btn = ((JButton)e.getSource());
 			if(btn.getBackground() == GameUI.alive){
@@ -41,13 +38,7 @@ public class GameController {
 
 	private ActionListener clearClicked = new ActionListener() {
 		public void actionPerformed(ActionEvent event) {
-			try{
-				timer.cancel();
-			}catch(IllegalStateException e){
-				e.printStackTrace();
-			}
-			isRunning = false;
-		
+			stopTimer(timer);
 			for(int row=0; row<gameLogic.getRow(); row++){
 				for(int col=0; col<gameLogic.getColumn(); col++){
 					gameLogic.setLife(row, col, false);
@@ -59,16 +50,33 @@ public class GameController {
 
 	private ActionListener stepClicked = new ActionListener() {
 		public void actionPerformed(ActionEvent event) {
-			try{
-				timer.cancel();
-			}catch(IllegalStateException e){
-				e.printStackTrace();
-			}
-			isRunning = false;
-			gameLogic.evolve();
-			setLifeInGrid();
+			stopTimer(timer);
+			evolve();
 		}
 	};
+
+	private ActionListener startClicked = new ActionListener() {
+		public void actionPerformed(ActionEvent event) {
+			if(! isRunning){
+				timer = new Timer();
+				task = new TimerTask() {
+					public void run() {
+						evolve();
+					}
+				};
+				timer.schedule(task, 500, 500);
+				isRunning = true;
+			}
+		}
+	};
+	
+	private void setListeners(){
+		userInterface.addBtnStartActionListener(startClicked);
+		userInterface.addBtnStepActionListener(stepClicked);
+		userInterface.addBtnClearActionListener(clearClicked);
+		userInterface.addGridButtonListener(gridButtonClicked, gameLogic);
+	}
+	
 	private void setLifeInGrid() {
 		for(int row=0; row < gameLogic.getRow(); row++){
 			for(int col=0; col < gameLogic.getColumn(); col++){
@@ -79,26 +87,24 @@ public class GameController {
 			}
 		}
 	}
-
-	private ActionListener startClicked = new ActionListener() {
-		public void actionPerformed(ActionEvent event) {
-			if(! isRunning){
-				timer = new Timer();
-				task = new TimerTask() {
-					public void run() {
-						gameLogic.evolve();
-						setLifeInGrid();
-					}
-				};
-				timer.schedule(task, 500, 500);
-				isRunning = true;
-			}
+	
+	private void evolve(){
+		gameLogic.evolve();
+		setLifeInGrid();
+	}
+	
+	private void stopTimer(Timer timer){
+		try{
+			timer.cancel();
+		}catch(IllegalStateException e){
+			e.printStackTrace();
 		}
-	};
+		isRunning = false;
+	}
 	
 	public static void main(String[] args) {
-		GameOfLife logic = new GameOfLife(50, 50);
-		GameUI view = new GameUI(logic);
-		GameController controller = new GameController(logic, view);
+		GameOfLife gameLogic = new GameOfLife(50, 50);
+		GameUI view = new GameUI(gameLogic);
+		GameController controller = new GameController(gameLogic, view);
 	}
 }

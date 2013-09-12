@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class GameUI {
-	private GameOfLife gameSim;
 	public static final Color dead = new Color(255, 255, 255);
 	public static final Color alive = new Color(0,0,0);
 	private JButton [][] gridButtons;
@@ -16,25 +15,15 @@ public class GameUI {
 	private JButton btnStep;
 		
 	public GameUI( GameOfLife simulation ){
-		gameSim = simulation;
 		btnStart = new JButton("Start");
 		btnClear = new JButton("Clear");
 		btnStep = new JButton("Step by Step");
-		gridButtons = new JButton[gameSim.getRow()][gameSim.getColumn()];
+		gridButtons = new JButton[simulation.getRow()][simulation.getColumn()];
 		JPanel gridPanel = new JPanel();
 		JPanel panelButtons = new JPanel();
 		JFrame gameFrame = new JFrame("Conway's Game of life");
 		
-		gridPanel.setSize(600, 600);
-		gridPanel.setLayout(new GridLayout(gameSim.getRow(), gameSim.getColumn()));
-		for(int row=0; row < gameSim.getRow(); row++){
-			for(int col=0; col < gameSim.getColumn(); col++){
-				gridButtons[row][col] = new JButton("");
-				setColor(row, col, dead);
-				gridButtons[row][col].setName(row+","+col);
-				gridPanel.add(gridButtons[row][col]);
-			}
-		}
+		initializeGrid(gridPanel, simulation);
 		
 		panelButtons.add(btnStart);
 		panelButtons.add(btnStep);
@@ -46,8 +35,20 @@ public class GameUI {
 		
 		gameFrame.add(gridPanel);
 		gameFrame.add(BorderLayout.SOUTH, panelButtons);
-		
 		gameFrame.setVisible(true);
+	}
+	
+	private void initializeGrid(JPanel gridPanel, GameOfLife simulation){
+		gridPanel.setSize(600, 600);
+		gridPanel.setLayout(new GridLayout(simulation.getRow(), simulation.getColumn()));
+		for(int row=0; row < simulation.getRow(); row++){
+			for(int col=0; col < simulation.getColumn(); col++){
+				gridButtons[row][col] = new JButton("");
+				setColor(row, col, dead);
+				gridButtons[row][col].setName(row+","+col);
+				gridPanel.add(gridButtons[row][col]);
+			}
+		}
 	}
 	
 	public void setColor(int row, int col, Color life){
@@ -66,9 +67,9 @@ public class GameUI {
 		btnStep.addActionListener(stepClicked);
 	}
 	
-	public void addGridButtonListener(ActionListener btnClicked){
-		for(int row=0; row < gameSim.getRow(); row++){
-			for(int col=0; col < gameSim.getColumn(); col++){
+	public void addGridButtonListener(ActionListener btnClicked, GameOfLife simulation){
+		for(int row=0; row < simulation.getRow(); row++){
+			for(int col=0; col < simulation.getColumn(); col++){
 				gridButtons[row][col].addActionListener(btnClicked);
 			}
 		}

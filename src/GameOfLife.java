@@ -57,9 +57,8 @@ public class GameOfLife {
 			for(int colMod = -1; colMod <=1; colMod++){
 				r = row + rowMod;
 				c = col + colMod;
-				//If cell exists and it is alive..
-				if ( isInBorder(r,c) && states[r][c]){
-					countNeighbours += 1; //count this neighbour
+				if ( isInBorder(r,c) && states[r][c]){		//If cell exists and it is alive..
+					countNeighbours += 1;	 //count this neighbour
 				}
 			}
 		}

@@ -5,7 +5,7 @@ public class GameOfLife {
 		states = new boolean[row][col];
 		for(int i=0; i<row; i++){
 			for(int j=0; j<col; j++){
-				states[i][j] = false;
+				states[i][j] = false;	//All cell's are dead
 			}
 		}
 	}
@@ -48,7 +48,7 @@ public class GameOfLife {
 		return row >= 0 && col >= 0 && row < getRow() && col < getColumn();
 	}
 	
-	private int calculations(int row, int col){ //Calculates neighbours
+	private int calculations(int row, int col){ //Calculates neighbours for specific cell
 		int r = 0;
 		int c = 0;
 		int countNeighbours = 0;

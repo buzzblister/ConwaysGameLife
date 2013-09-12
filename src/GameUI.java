@@ -16,7 +16,7 @@ public class GameUI {
 		
 	public GameUI( GameOfLife simulation ){
 		btnStart = new JButton("Start");
-		btnClear = new JButton("Clear");
+		btnClear = new JButton("Clear/Stop");
 		btnStep = new JButton("Step by Step");
 		gridButtons = new JButton[simulation.getRow()][simulation.getColumn()];
 		JPanel gridPanel = new JPanel();
@@ -32,7 +32,6 @@ public class GameUI {
 		gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		gameFrame.setResizable(false);
 		gameFrame.setSize(600,620);
-		
 		gameFrame.add(gridPanel);
 		gameFrame.add(BorderLayout.SOUTH, panelButtons);
 		gameFrame.setVisible(true);
@@ -51,10 +50,11 @@ public class GameUI {
 		}
 	}
 	
-	public void setColor(int row, int col, Color life){
+	public void setColor(int row, int col, Color life){ //Set color to a specific button in grid
 		gridButtons[row][col].setBackground(life);
 	}
 	
+	//Action listeners of buttons..
 	public void addBtnStartActionListener(ActionListener startClicked){
 		btnStart.addActionListener(startClicked);
 	}

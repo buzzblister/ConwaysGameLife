@@ -22,6 +22,40 @@ public class GameController {
 		setListeners();
 	}
 	
+	private ActionListener menuItemLoadClicked = new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			if(! isRunning) {
+				PropertyFileIO properties = new PropertyFileIO();
+				gameLogic = properties.readLifeSim(userInterface.fileBrowser());
+				//ReadWriteXML ioXML = new ReadWriteXML();
+				//gameLogic = ioXML.readLifeSim(userInterface.fileBrowser());
+				//BinaryFileInputOutput binaryFile = new BinaryFileInputOutput();
+				//gameLogic = binaryFile.readLifeSim(userInterface.fileBrowser());//, gameLogic);
+				
+				userInterface.setLifeInGrid(gameLogic);
+			}
+			else {
+				userInterface.warningMessage();
+			}
+		}
+	};
+	
+	private ActionListener menuItemStoreClicked = new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			if(! isRunning) {
+				PropertyFileIO properties = new PropertyFileIO();
+				properties.writeLifeSim(userInterface.getFileName(), gameLogic);
+				//ReadWriteXML ioXML = new ReadWriteXML();
+				//ioXML.writeLifeSim(userInterface.getFileName(), gameLogic);
+				//BinaryFileInputOutput binaryFile = new BinaryFileInputOutput();
+				//binaryFile.writeLifeSim(userInterface.getFileName(), gameLogic);
+			}
+			else {
+				userInterface.warningMessage();
+			}
+		}
+	};
+	
 	private ActionListener gridButtonClicked = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			JButton cell = ((JButton)e.getSource());
@@ -67,6 +101,8 @@ public class GameController {
 		userInterface.addBtnStepActionListener(stepClicked);
 		userInterface.addBtnClearActionListener(clearClicked);
 		userInterface.addGridButtonListener(gridButtonClicked, gameLogic);
+		userInterface.addMenuItemLoadListener(menuItemLoadClicked);
+		userInterface.addMenuItemStoreListener(menuItemStoreClicked);
 	}
 	
 	private void evolve() {

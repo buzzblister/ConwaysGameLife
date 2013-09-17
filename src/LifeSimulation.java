@@ -1,6 +1,10 @@
-public class LifeSimulation {
-	
+import java.io.Serializable;
+
+public class LifeSimulation implements Serializable {
+
+	private static final long serialVersionUID = 1454070721099717422L;
 	private static final boolean BOOLEAN_DEAD = false;
+	
 	private boolean states[][];
 
 	LifeSimulation(int row, int col) {
@@ -28,7 +32,7 @@ public class LifeSimulation {
 		states[row][col] = life;
 	}
 	
-	public void evolve() { 
+	public void evolve() {
 		boolean temp[][] = new boolean [getRow()][getColumn()];
 		
 		for (int row=0; row<getRow(); row++) {

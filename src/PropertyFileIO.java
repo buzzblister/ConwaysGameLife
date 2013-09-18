@@ -14,7 +14,7 @@ public class PropertyFileIO implements InputOutputLifeSimulation{
 		int row; 
 		int col;
 		String strStates;
-		
+
 		if (selectedFile != null) {
 			try {
 				fileInput = new FileInputStream(selectedFile);
@@ -42,11 +42,6 @@ public class PropertyFileIO implements InputOutputLifeSimulation{
 				}
 			} catch (ArrayIndexOutOfBoundsException ex) {
 				System.out.println("Illegal states.. loading default values...");
-				for (int i=0; i < row; i++) {
-					for (int j=0; j < col; j++) {
-						simulation.setLife(i, j, false);
-					}
-				}
 			}
 			return simulation;
 		}
@@ -80,5 +75,4 @@ public class PropertyFileIO implements InputOutputLifeSimulation{
 			}
 		}
 	}
-
 }

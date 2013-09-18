@@ -27,8 +27,8 @@ public class GameUI {
 	private JButton btnClear;
 	private JButton btnStep;
 	private JButton btnChangeGridSize;
-	private JTextField rows;
-	private JTextField columns;
+	private JTextField rows = new JTextField(2);
+	private JTextField columns = new JTextField(2);
 	private JMenuItem menuItemStore;
 	private JMenuItem menuItemLoad;
 		
@@ -52,9 +52,6 @@ public class GameUI {
 		gridPanel = new JPanel();
 		gridPanel.setSize(600, 600);
 		initializeGrid(simulation);
-		
-		rows = new JTextField(2);
-		columns = new JTextField(2);
 		
 		rows.setText(Integer.toString(simulation.getRow()));
 		columns.setText(Integer.toString(simulation.getColumn()));
@@ -94,8 +91,12 @@ public class GameUI {
 				gridPanel.add(gridButtons[row][col]);
 			}
 		}
+		
+		rows.setText(Integer.toString(simulation.getRow()));
+		columns.setText(Integer.toString(simulation.getColumn()));
 
-		gameFrame.pack();
+		gameFrame.validate();
+		//gameFrame.pack();
 		gameFrame.setSize(600, 600);
 	}
 	
@@ -152,15 +153,20 @@ public class GameUI {
 				simulation = new LifeSimulation(row, col);
 			}
 			else {
-				simulation = new LifeSimulation(50, 50);
+				simulation = illegalSize();
 			}
 			
-			initializeGrid(simulation);
-			
 		} catch (NumberFormatException ex) {
-			JOptionPane.showMessageDialog(gameFrame, "Enter numbers between 1..99 !");
+			simulation = illegalSize();
 		}
+		
+		initializeGrid(simulation);
 		return simulation;
+	}
+	
+	private LifeSimulation illegalSize() {
+		JOptionPane.showMessageDialog(gameFrame, "Enter numbers between 1..99 !");
+		return new LifeSimulation(50, 50);
 	}
 	
 	//Methods to set action listener for each button..

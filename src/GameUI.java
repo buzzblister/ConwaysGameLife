@@ -26,21 +26,17 @@ public class GameUI {
 	private JButton btnStart;
 	private JButton btnClear;
 	private JButton btnStep;
+	private JButton btnChangeGridSize;
 	private JTextField rows;
 	private JTextField columns;
-	private JButton changeGridSize;
 	private JMenuItem menuItemStore;
 	private JMenuItem menuItemLoad;
 		
-	public GameUI( LifeSimulation simulation ) {
+	public GameUI(LifeSimulation simulation) {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menuFile = new JMenu("File");
 		menuItemStore = new JMenuItem("Store");
 		menuItemLoad = new JMenuItem("Load");
-		
-		menuFile.getAccessibleContext().setAccessibleDescription("Load/Store game state from/to file");
-		menuItemStore.getAccessibleContext().setAccessibleDescription("Store this state of game to file");
-		menuItemLoad.getAccessibleContext().setAccessibleDescription("Load a game state from file");
 		
 		menuBar.add(menuFile);
 		menuFile.add(menuItemLoad);
@@ -49,8 +45,8 @@ public class GameUI {
 		btnStart = new JButton("Start");
 		btnClear = new JButton("Clear/Stop");
 		btnStep = new JButton("Step by Step");
-		changeGridSize = new JButton("Change Size");
-		changeGridSize.setToolTipText("Enter: rows and columns to text fields then press this button to change!");
+		btnChangeGridSize = new JButton("Change Size");
+		btnChangeGridSize.setToolTipText("Enter: rows and columns to text fields then press this button to change!");
 		gridButtons = new JButton[simulation.getRow()][simulation.getColumn()];
 		
 		gridPanel = new JPanel();
@@ -71,7 +67,7 @@ public class GameUI {
 		panelButtons.add(btnClear);
 		panelButtons.add(rows);
 		panelButtons.add(columns);
-		panelButtons.add(changeGridSize);
+		panelButtons.add(btnChangeGridSize);
 		panelButtons.setSize(600, 100);
 		
 		gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -84,8 +80,8 @@ public class GameUI {
 		gameFrame.setAlwaysOnTop(true);
 	}
 	
+	//Methods to interact with grid
 	public void initializeGrid(LifeSimulation simulation) {
-		gameFrame.remove(gridPanel);
 		gridPanel.removeAll();
 		gridPanel.setLayout(new GridLayout(simulation.getRow(), simulation.getColumn()));
 		gridButtons = new JButton[simulation.getRow()][simulation.getColumn()];
@@ -98,8 +94,7 @@ public class GameUI {
 				gridPanel.add(gridButtons[row][col]);
 			}
 		}
-		
-		gameFrame.add(gridPanel);
+
 		gameFrame.pack();
 		gameFrame.setSize(600, 600);
 	}
@@ -139,7 +134,36 @@ public class GameUI {
 		}
 	}
 	
-	//Action listeners of buttons..
+	private boolean validateGridSize(int row, int col) {
+		return (row != 0 && col !=0 && row < 100 && col < 100);
+	}
+	
+	public LifeSimulation changeGridSize() {
+		LifeSimulation simulation = null;
+		
+		try {
+			String rowCount = rows.getText();
+			String colCount = columns.getText();
+			
+			int row = Math.abs(Integer.parseInt(rowCount));
+			int col = Math.abs(Integer.parseInt(colCount));
+			
+			if (validateGridSize(row, col)) {
+				simulation = new LifeSimulation(row, col);
+			}
+			else {
+				simulation = new LifeSimulation(50, 50);
+			}
+			
+			initializeGrid(simulation);
+			
+		} catch (NumberFormatException ex) {
+			JOptionPane.showMessageDialog(gameFrame, "Enter numbers between 1..99 !");
+		}
+		return simulation;
+	}
+	
+	//Methods to set action listener for each button..
 	public void addBtnStartActionListener(ActionListener startClicked) {
 		btnStart.addActionListener(startClicked);
 	}
@@ -152,12 +176,16 @@ public class GameUI {
 		btnStep.addActionListener(stepClicked);
 	}
 	
-	public void addGridButtonListener(ActionListener btnClicked, LifeSimulation simulation) {
-		for (int row=0; row < simulation.getRow(); row++) {
-			for (int col=0; col < simulation.getColumn(); col++) {
+	public void addGridButtonListener(ActionListener btnClicked) {
+		for (int row=0; row < gridButtons.length; row++) {
+			for (int col=0; col < gridButtons[0].length; col++) {
 				gridButtons[row][col].addActionListener(btnClicked);
 			}
 		}
+	}
+	
+	public void addChangeGridSizeButtonListener(ActionListener changeGridSizeClicked) {
+		btnChangeGridSize.addActionListener(changeGridSizeClicked);
 	}
 	
 	public void addMenuItemLoadListener(ActionListener itemLoadClicked) {
@@ -173,6 +201,7 @@ public class GameUI {
 		columns.setEditable(isEditable);
 	}
 	
+	//Methods for input/output..
 	public String getFileName() {
 		String inputFileName = JOptionPane.showInputDialog(gameFrame, "Enter file name without extension: ",
 				"Save", JOptionPane.PLAIN_MESSAGE);
@@ -195,6 +224,6 @@ public class GameUI {
 	}
 	
 	public void warningMessage() {
-		JOptionPane.showMessageDialog(gameFrame, "Can't load or save while game is Running!");
+		JOptionPane.showMessageDialog(gameFrame, "Can't do this operation while game is Running!");
 	}
 }

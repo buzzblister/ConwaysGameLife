@@ -33,7 +33,7 @@ public class GameController {
 				//gameLogic = binaryFile.readLifeSim(userInterface.fileBrowser());//, gameLogic);
 				
 				userInterface.initializeGrid(gameLogic);
-				userInterface.addGridButtonListener(gridButtonClicked, gameLogic);
+				userInterface.addGridButtonListener(gridButtonClicked);
 			}
 			else {
 				userInterface.warningMessage();
@@ -86,6 +86,18 @@ public class GameController {
 		}
 	};
 	
+	private ActionListener changeGridSizeClicked = new ActionListener() {
+		public void actionPerformed(ActionEvent event) {
+			if (! isRunning) {
+				gameLogic = userInterface.changeGridSize();
+				userInterface.addGridButtonListener(gridButtonClicked);
+			}
+			else {
+				userInterface.warningMessage();
+			}
+		}
+	};
+	
 	private void startTask() {
 		if (!isRunning) {
 			timer = new Timer();
@@ -100,20 +112,6 @@ public class GameController {
 		}
 	}
 	
-	private void setListeners() {
-		userInterface.addBtnStartActionListener(startClicked);
-		userInterface.addBtnStepActionListener(stepClicked);
-		userInterface.addBtnClearActionListener(clearClicked);
-		userInterface.addGridButtonListener(gridButtonClicked, gameLogic);
-		userInterface.addMenuItemLoadListener(menuItemLoadClicked);
-		userInterface.addMenuItemStoreListener(menuItemStoreClicked);
-	}
-	
-	private void evolve() {
-		gameLogic.evolve();
-		userInterface.setLifeInGrid(gameLogic);
-	}
-	
 	private void stopTimer(Timer timer) {
 		try {
 			timer.cancel();
@@ -121,5 +119,20 @@ public class GameController {
 			e.printStackTrace();
 		}
 		isRunning = false;
+	}
+	
+	private void evolve() {
+		gameLogic.evolve();
+		userInterface.setLifeInGrid(gameLogic);
+	}
+	
+	private void setListeners() {
+		userInterface.addBtnStartActionListener(startClicked);
+		userInterface.addBtnStepActionListener(stepClicked);
+		userInterface.addBtnClearActionListener(clearClicked);
+		userInterface.addGridButtonListener(gridButtonClicked);
+		userInterface.addMenuItemLoadListener(menuItemLoadClicked);
+		userInterface.addMenuItemStoreListener(menuItemStoreClicked);
+		userInterface.addChangeGridSizeButtonListener(changeGridSizeClicked);
 	}
 }

@@ -12,6 +12,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class GameUI {
@@ -20,10 +21,14 @@ public class GameUI {
 	private static final Color COLOR_ALIVE = new Color(0,0,0);
 	
 	private JFrame gameFrame = new JFrame("Conway's Game of life");
+	private JPanel gridPanel;
 	private JButton [][] gridButtons;
 	private JButton btnStart;
 	private JButton btnClear;
 	private JButton btnStep;
+	private JTextField rows;
+	private JTextField columns;
+	private JButton changeGridSize;
 	private JMenuItem menuItemStore;
 	private JMenuItem menuItemLoad;
 		
@@ -44,37 +49,59 @@ public class GameUI {
 		btnStart = new JButton("Start");
 		btnClear = new JButton("Clear/Stop");
 		btnStep = new JButton("Step by Step");
+		changeGridSize = new JButton("Change Size");
+		changeGridSize.setToolTipText("Enter: rows and columns to text fields then press this button to change!");
 		gridButtons = new JButton[simulation.getRow()][simulation.getColumn()];
 		
-		JPanel gridPanel = new JPanel();
-		initializeGrid(gridPanel, simulation);
+		gridPanel = new JPanel();
+		gridPanel.setSize(600, 600);
+		initializeGrid(simulation);
+		
+		rows = new JTextField(2);
+		columns = new JTextField(2);
+		
+		rows.setText(Integer.toString(simulation.getRow()));
+		columns.setText(Integer.toString(simulation.getColumn()));
+		rows.setDisabledTextColor(Color.RED);
+		columns.setDisabledTextColor(Color.RED);
 		
 		JPanel panelButtons = new JPanel();
 		panelButtons.add(btnStart);
 		panelButtons.add(btnStep);
 		panelButtons.add(btnClear);
+		panelButtons.add(rows);
+		panelButtons.add(columns);
+		panelButtons.add(changeGridSize);
+		panelButtons.setSize(600, 100);
 		
 		gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		gameFrame.setResizable(false);
-		gameFrame.setSize(600,620);
+		gameFrame.setSize(600,  600);
 		gameFrame.setJMenuBar(menuBar);
 		gameFrame.add(gridPanel);
 		gameFrame.add(BorderLayout.SOUTH, panelButtons);
 		gameFrame.setVisible(true);
+		gameFrame.setAlwaysOnTop(true);
 	}
 	
-	private void initializeGrid(JPanel gridPanel, LifeSimulation simulation) {
-		gridPanel.setSize(600, 600);
+	public void initializeGrid(LifeSimulation simulation) {
+		gameFrame.remove(gridPanel);
+		gridPanel.removeAll();
 		gridPanel.setLayout(new GridLayout(simulation.getRow(), simulation.getColumn()));
+		gridButtons = new JButton[simulation.getRow()][simulation.getColumn()];
 		
 		for (int row=0; row < simulation.getRow(); row++) {
 			for (int col=0; col < simulation.getColumn(); col++) {
 				gridButtons[row][col] = new JButton("");
-				gridButtons[row][col].setBackground(COLOR_DEAD);
+				gridButtons[row][col].setBackground(simulation.getLife(row, col) ? COLOR_ALIVE : COLOR_DEAD);
 				gridButtons[row][col].setName(row+","+col);
 				gridPanel.add(gridButtons[row][col]);
 			}
 		}
+		
+		gameFrame.add(gridPanel);
+		gameFrame.pack();
+		gameFrame.setSize(600, 600);
 	}
 	
 	public void clearGrid(LifeSimulation gameLogic) {
@@ -139,6 +166,11 @@ public class GameUI {
 	
 	public void addMenuItemStoreListener(ActionListener itemStoreClicked) {
 		menuItemStore.addActionListener(itemStoreClicked);
+	}
+	
+	public void enableOrDisableTextFields(boolean isEditable) {
+		rows.setEditable(isEditable);
+		columns.setEditable(isEditable);
 	}
 	
 	public String getFileName() {

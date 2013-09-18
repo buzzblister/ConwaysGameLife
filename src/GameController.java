@@ -32,7 +32,8 @@ public class GameController {
 				//BinaryFileInputOutput binaryFile = new BinaryFileInputOutput();
 				//gameLogic = binaryFile.readLifeSim(userInterface.fileBrowser());//, gameLogic);
 				
-				userInterface.setLifeInGrid(gameLogic);
+				userInterface.initializeGrid(gameLogic);
+				userInterface.addGridButtonListener(gridButtonClicked, gameLogic);
 			}
 			else {
 				userInterface.warningMessage();
@@ -67,6 +68,7 @@ public class GameController {
 		public void actionPerformed(ActionEvent event) {
 			stopTimer(timer);
 			userInterface.clearGrid(gameLogic);
+			userInterface.enableOrDisableTextFields(true);
 		}
 	};
 
@@ -74,6 +76,7 @@ public class GameController {
 		public void actionPerformed(ActionEvent event) {
 			stopTimer(timer);
 			evolve();
+			userInterface.enableOrDisableTextFields(true);
 		}
 	};
 
@@ -93,6 +96,7 @@ public class GameController {
 			};
 			timer.schedule(task, 500, 500);
 			isRunning = true;
+			userInterface.enableOrDisableTextFields(false);
 		}
 	}
 	

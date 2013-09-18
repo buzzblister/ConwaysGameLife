@@ -7,7 +7,7 @@ public class LifeSimulation implements Serializable {
 	
 	private boolean states[][];
 
-	LifeSimulation(int row, int col) {
+	public LifeSimulation(int row, int col) {
 		states = new boolean[row][col];
 		for (int i=0; i<row; i++) {
 			for (int j=0; j<col; j++) {

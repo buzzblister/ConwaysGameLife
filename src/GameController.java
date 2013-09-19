@@ -106,7 +106,7 @@ public class GameController {
 					evolve();
 				}
 			};
-			timer.schedule(task, 500, 500);
+			timer.schedule(task, 100, 150);
 			isRunning = true;
 			userInterface.enableOrDisableTextFields(false);
 		}

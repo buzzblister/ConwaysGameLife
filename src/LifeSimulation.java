@@ -6,7 +6,7 @@ public class LifeSimulation implements Serializable {
 	private static final boolean BOOLEAN_DEAD = false;
 	
 	private boolean states[][];
-
+	
 	public LifeSimulation(int row, int col) {
 		states = new boolean[row][col];
 		for (int i=0; i<row; i++) {
@@ -50,7 +50,7 @@ public class LifeSimulation implements Serializable {
 			}
 		}
 	}
-
+	
 	private boolean isInBorder(int row, int col) {
 		return row >= 0 && col >= 0 && row < getRow() && col < getColumn();
 	}

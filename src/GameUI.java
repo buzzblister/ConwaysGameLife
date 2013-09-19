@@ -95,8 +95,8 @@ public class GameUI {
 		rows.setText(Integer.toString(simulation.getRow()));
 		columns.setText(Integer.toString(simulation.getColumn()));
 
-		gameFrame.validate();
-		//gameFrame.pack();
+		//gameFrame.validate();
+		gameFrame.pack();
 		gameFrame.setSize(600, 600);
 	}
 	

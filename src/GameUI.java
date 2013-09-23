@@ -47,10 +47,8 @@ public class GameUI {
 		btnStep = new JButton("Step by Step");
 		btnChangeGridSize = new JButton("Change Size");
 		btnChangeGridSize.setToolTipText("Enter: rows and columns to text fields then press this button to change!");
-		gridButtons = new JButton[simulation.getRow()][simulation.getColumn()];
 		
 		gridPanel = new JPanel();
-		gridPanel.setSize(600, 600);
 		initializeGrid(simulation);
 		
 		rows.setText(Integer.toString(simulation.getRow()));
@@ -111,8 +109,8 @@ public class GameUI {
 	
 	public void setLifeInGrid(LifeSimulation gameLogic) {
 		if (gameLogic != null) {
-			for (int row=0; row < gameLogic.getRow(); row++) {
-				for (int col=0; col < gameLogic.getColumn(); col++) {
+			for (int row=0; row < gridButtons.length; row++) {
+				for (int col=0; col < gridButtons[0].length; col++) {
 					if (gameLogic.getLife(row, col)) {
 						gridButtons[row][col].setBackground(COLOR_ALIVE);
 					}

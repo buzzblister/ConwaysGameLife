@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class PropertyFileIO implements InputOutputLifeSimulation{
-	
+
 	public LifeSimulation readLifeSim(File selectedFile) {
 		Properties readGameLogicProperties = new Properties();
 		FileInputStream fileInput;
 		LifeSimulation simulation = null;
-		int row; 
+		int row;
 		int col;
 		String strStates;
 
@@ -24,15 +24,15 @@ public class PropertyFileIO implements InputOutputLifeSimulation{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 			row = Integer.parseInt(readGameLogicProperties.getProperty("rows", "50"));
 			col = Integer.parseInt(readGameLogicProperties.getProperty("columns", "50"));
 			strStates = readGameLogicProperties.getProperty("states", "false");
-			
+
 			simulation = new LifeSimulation(row, col);
 			String[] arrStates = strStates.split(" ");
 			int index = 0;
-			
+
 			try {
 				for (int i=0; i < row; i++) {
 					for (int j=0; j < col; j++) {
@@ -41,7 +41,7 @@ public class PropertyFileIO implements InputOutputLifeSimulation{
 					}
 				}
 			} catch (ArrayIndexOutOfBoundsException ex) {
-				System.out.println("Illegal states.. loading default values...");
+				System.out.println("Illegal states! Loading default values..");
 			}
 			return simulation;
 		}
@@ -64,7 +64,7 @@ public class PropertyFileIO implements InputOutputLifeSimulation{
 						strStates += simulation.getLife(row, column) + " ";
 					}
 				}
-				
+
 				gameLogicProperties.put("states", strStates);
 				gameLogicProperties.store(fileOutput, "Properties for Game of life");
 				
